@@ -1,0 +1,33 @@
+From f788e994a99205a8cd32d64f3d70326da3436565 Mon Sep 17 00:00:00 2001
+From: Luca Bacci <luca.bacci982@gmail.com>
+Date: Thu, 1 Dec 2022 18:18:23 +0100
+Subject: [PATCH] GLX: Add extra glXMakeContextCurrent () call to work around a
+ DRI issue
+
+Reference: https://gitlab.freedesktop.org/mesa/mesa/-/issues/7808
+
+Fixes #4499, #5387, #5170
+---
+ gdk/x11/gdkglcontext-glx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/gdk/x11/gdkglcontext-glx.c b/gdk/x11/gdkglcontext-glx.c
+index 229fe4afaf..6be6eb7e16 100644
+--- a/gdk/x11/gdkglcontext-glx.c
++++ b/gdk/x11/gdkglcontext-glx.c
+@@ -232,6 +232,12 @@ gdk_x11_gl_context_glx_make_current (GdkGLContext *context,
+                      "Making GLX context %p current to drawable %lu",
+                      context, (unsigned long) drawable);
+ 
++  /* Work around a glitch, see
++   * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/5281
++   */
++  if (glXGetCurrentContext () != self->glx_context)
++    glXMakeContextCurrent (dpy, None, None, NULL);
++
+   if (!glXMakeContextCurrent (dpy, drawable, drawable, self->glx_context))
+     return FALSE;
+ 
+-- 
+GitLab
+

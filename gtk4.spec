@@ -17,7 +17,7 @@
 
 Name:           gtk4
 Version:        4.8.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GTK graphical user interface library
 
 License:        LGPLv2+
@@ -37,6 +37,10 @@ Patch1:         0001-focus-fall-back-to-old-behaviour-if-we-didn-t-focus-.patch
 # https://gitlab.gnome.org/GNOME/gtk/-/issues/5192
 # Avoids app widgets potentially becoming unexpectedly narrower
 Patch2:         0001-Revert-treepopover-Do-not-propagate-natural-width-of.patch
+# https://gitlab.gnome.org/GNOME/gtk/-/issues/5170
+# https://gitlab.gnome.org/GNOME/nautilus/-/issues/2503
+# Fix rendering issues on windows and popups on xorg
+Patch3:         f788e994a99205a8cd32d64f3d70326da3436565.patch
 
 
 BuildRequires:  cups-devel
@@ -249,6 +253,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_mandir}/man1/gtk4-widget-factory.1*
 
 %changelog
+* Sat Dec 10 2022 Alberto Pedron <albertop2197@gmail.com> - 4.8.2-3
+- Fix rendering issues on windows and popups on xorg
+
 * Tue Nov 01 2022 Adam Williamson <awilliam@redhat.com> - 4.8.2-2
 - Attempt to fix a focus issue introduced in 4.8.2 (nautilus gl2574)
 - Backport MR #5091 to fix a width problem (gtk gl5192)
